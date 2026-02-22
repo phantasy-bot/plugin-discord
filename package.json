@@ -1,0 +1,36 @@
+{
+  "name": "@phantasy/plugin-discord",
+  "version": "1.0.0",
+  "description": "Discord plugin for Phantasy - Bot integration for messaging, commands, and server management",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": ["phantasy", "plugin", "discord", "messaging", "bot"],
+  "author": "Phantasy",
+  "license": "BUSL-1.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phantasy-bot/plugin-discord"
+  },
+  "peerDependencies": {
+    "@phantasy/core": "^1.0.0",
+    "express": "^4.18.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  },
+  "phantasy": {
+    "category": "social",
+    "tier": "optional",
+    "capabilities": ["message", "command", "voice"]
+  }
+}
