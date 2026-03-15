@@ -1,50 +1,27 @@
 {
-  "name": "@phantasy/plugin-discord",
-  "version": "2.0.0",
-  "private": true,
+  "slug": "plugin-discord",
+  "packageName": "@phantasy/plugin-discord",
+  "displayName": "Discord",
   "description": "Discord integration plugin for Phantasy companions.",
-  "license": "MIT",
-  "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
-    }
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE",
-    "SECURITY.md",
-    "phantasy.plugin.json"
-  ],
-  "sideEffects": false,
-  "keywords": [
+  "workspace": "business",
+  "extensionKind": "integration",
+  "category": "social",
+  "tags": [
     "discord",
     "community",
     "messaging",
     "bot"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/phantasy-bot/plugin-discord"
-  },
-  "homepage": "https://github.com/phantasy-bot/plugin-discord",
-  "scripts": {
-    "build": "tsup",
-    "typecheck": "tsc --noEmit"
-  },
-  "peerDependencies": {
-    "@phantasy/agent": "^2.0.0"
-  },
-  "devDependencies": {
-    "@types/node": "^24.0.0",
-    "tsup": "^8.0.0",
-    "typescript": "^5.9.2"
-  },
+  "permissions": [
+    "internet"
+  ],
+  "visibility": "public",
+  "repoUrl": "https://github.com/phantasy-bot/plugin-discord",
+  "sourceOfTruth": "standalone-repo",
+  "syncMode": "scaffold-package",
+  "phase": "scaffold-only",
+  "repoExists": true,
+  "npmPublished": false,
   "phantasy": {
     "displayName": "Discord",
     "category": "social",
@@ -85,5 +62,6 @@
         }
       }
     }
-  }
+  },
+  "exportedAt": "2026-03-15T15:23:37.089Z"
 }

@@ -1,0 +1,21 @@
+{
+  "name": "@phantasy/plugin-discord",
+  "version": "2.0.0",
+  "description": "Discord integration plugin for Phantasy companions.",
+  "displayName": "Discord",
+  "workspace": "business",
+  "extensionKind": "integration",
+  "adminSurface": {
+    "tabId": "discord",
+    "label": "Discord",
+    "section": "business",
+    "workspace": "business",
+    "kind": "generic",
+    "keywords": [
+      "discord",
+      "community",
+      "messaging",
+      "bot"
+    ]
+  }
+}
