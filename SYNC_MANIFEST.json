@@ -15,13 +15,47 @@
   "permissions": [
     "internet"
   ],
+  "dependencies": [],
   "visibility": "public",
   "repoUrl": "https://github.com/phantasy-bot/plugin-discord",
   "sourceOfTruth": "standalone-repo",
-  "syncMode": "scaffold-package",
-  "phase": "scaffold-only",
+  "syncMode": "source-extract",
+  "phase": "source-extracted",
   "repoExists": true,
   "npmPublished": false,
+  "sourceExtract": {
+    "packageDependencies": {
+      "ws": "8.18.3"
+    },
+    "files": [
+      {
+        "sourcePath": "src/plugins/discord/index.ts",
+        "targetPath": "src/index.ts"
+      },
+      {
+        "sourcePath": "src/plugins/discord/discord-plugin.ts",
+        "targetPath": "src/discord-plugin.ts"
+      },
+      {
+        "sourcePath": "src/plugins/discord/discord-integration.ts",
+        "targetPath": "src/discord-integration.ts"
+      },
+      {
+        "sourcePath": "src/plugins/discord/runtime/discord-bot-service.ts",
+        "targetPath": "src/runtime/discord-bot-service.ts"
+      }
+    ],
+    "replacements": [
+      {
+        "from": "\"@/plugins/base-plugin\"",
+        "to": "\"@phantasy/agent/plugins\""
+      },
+      {
+        "from": "\"@/plugin-runtime\"",
+        "to": "\"@phantasy/agent/plugin-runtime\""
+      }
+    ]
+  },
   "phantasy": {
     "displayName": "Discord",
     "category": "social",
@@ -36,6 +70,7 @@
     "permissions": [
       "internet"
     ],
+    "pluginDependencies": [],
     "platforms": [
       "node"
     ],
@@ -63,5 +98,5 @@
       }
     }
   },
-  "exportedAt": "2026-03-15T15:23:37.089Z"
+  "exportedAt": "2026-03-16T02:20:40.090Z"
 }
