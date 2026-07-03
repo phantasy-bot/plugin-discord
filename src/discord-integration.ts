@@ -76,12 +76,10 @@ function getDiscordIntegrationConfig(agent: unknown): Partial<DiscordConfig> | u
   }
 
   return {
-    botToken:
-      readOptionalString(discord.botToken) || readOptionalString(discord.token),
+    botToken: readOptionalString(discord.botToken) || readOptionalString(discord.token),
     token: readOptionalString(discord.token),
     clientId:
-      readOptionalString(discord.clientId) ||
-      readOptionalString(discord.applicationId),
+      readOptionalString(discord.clientId) || readOptionalString(discord.applicationId),
     clientSecret: readOptionalString(discord.clientSecret),
     publicKey: readOptionalString(discord.publicKey),
     guildId: readOptionalString(discord.guildId),
@@ -108,7 +106,8 @@ function getDiscordIntegrationConfig(agent: unknown): Partial<DiscordConfig> | u
 
 function normalizeDiscordConfig(config: Partial<DiscordConfig>): DiscordConfig {
   return {
-    botToken: readOptionalString(config.botToken) || readOptionalString(config.token) || "",
+    botToken:
+      readOptionalString(config.botToken) || readOptionalString(config.token) || "",
     token: readOptionalString(config.token),
     clientId: readOptionalString(config.clientId) || "",
     clientSecret: readOptionalString(config.clientSecret),
@@ -204,9 +203,7 @@ export class DiscordIntegration {
     }
   }
 
-  async testConnection(
-    config: Pick<DiscordConfig, "botToken" | "clientId">,
-  ): Promise<{
+  async testConnection(config: Pick<DiscordConfig, "botToken" | "clientId">): Promise<{
     success: boolean;
     error?: string;
     botInfo?: { id?: string; username?: string };

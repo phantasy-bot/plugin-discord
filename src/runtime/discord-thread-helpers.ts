@@ -22,10 +22,7 @@ export function cleanDiscordMessageContent(options: {
 }): string {
   const text = options.text
     .replace(new RegExp(`<@!?${options.clientId}>`, "g"), "")
-    .replace(
-      options.botUsername ? new RegExp(`@${options.botUsername}`, "gi") : /$^/,
-      "",
-    )
+    .replace(options.botUsername ? new RegExp(`@${options.botUsername}`, "gi") : /$^/, "")
     .trim();
 
   return text || options.text.trim();

@@ -112,7 +112,8 @@ export class DiscordBotService {
       platform: "discord",
       registerDirectHandler: true,
       registerMentionHandler: true,
-      registerMessageHandler: this.config.enableAutoReply && !this.config.enableMentionOnly,
+      registerMessageHandler:
+        this.config.enableAutoReply && !this.config.enableMentionOnly,
       registerSubscribedHandler: true,
       replyDelayMs: Math.max(0, this.config.replyDelay) * 1000,
       stateKeyPrefix: "phantasy-chat-sdk:discord",

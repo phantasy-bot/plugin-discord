@@ -238,7 +238,9 @@ export class DiscordPlugin extends BasePlugin implements PlatformCapability {
       error: connected ? undefined : "Discord bot is not connected",
       summary: connected ? "Configured" : "Configured, not running",
       configuredChannels,
-      recommendedActions: ["Start the integration after configuring Discord credentials."],
+      recommendedActions: [
+        "Start the integration after configuring Discord credentials.",
+      ],
     };
   }
 
@@ -249,9 +251,7 @@ export class DiscordPlugin extends BasePlugin implements PlatformCapability {
   }): Promise<{ success: boolean; messageId?: string; error?: string }> {
     const runtimeConfig = await this.buildRuntimeConfig();
     const channelId =
-      params.channelId ||
-      runtimeConfig?.defaultChannelId ||
-      runtimeConfig?.channelIds[0];
+      params.channelId || runtimeConfig?.defaultChannelId || runtimeConfig?.channelIds[0];
 
     if (!runtimeConfig || !channelId) {
       return {
@@ -328,9 +328,7 @@ export class DiscordPlugin extends BasePlugin implements PlatformCapability {
     }
   }
 
-  async testConnection(
-    config: Pick<DiscordConfig, "botToken" | "clientId">,
-  ): Promise<{
+  async testConnection(config: Pick<DiscordConfig, "botToken" | "clientId">): Promise<{
     success: boolean;
     error?: string;
     botInfo?: { id?: string; username?: string };
