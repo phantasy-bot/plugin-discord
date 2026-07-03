@@ -1,0 +1,41 @@
+{
+  "name": "@phantasy/plugin-discord",
+  "version": "0.1.0-beta",
+  "description": "Discord community plugin for Phantasy companions.",
+  "displayName": "Discord",
+  "main": "./dist/index.js",
+  "workspace": "business",
+  "extensionKind": "integration",
+  "category": "social",
+  "tags": [
+    "discord",
+    "community",
+    "messaging",
+    "bot"
+  ],
+  "permissions": [
+    "internet"
+  ],
+  "dependencies": [],
+  "adminSurface": {
+    "tabId": "discord",
+    "label": "Discord",
+    "workspace": "business",
+    "kind": "generic",
+    "keywords": [
+      "discord",
+      "community",
+      "messaging",
+      "bot"
+    ]
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "default": true
+      }
+    }
+  }
+}

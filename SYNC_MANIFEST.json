@@ -1,0 +1,115 @@
+{
+  "slug": "plugin-discord",
+  "packageName": "@phantasy/plugin-discord",
+  "displayName": "Discord",
+  "description": "Discord community plugin for Phantasy companions.",
+  "workspace": "business",
+  "extensionKind": "integration",
+  "category": "social",
+  "tags": [
+    "discord",
+    "community",
+    "messaging",
+    "bot"
+  ],
+  "permissions": [
+    "internet"
+  ],
+  "dependencies": [],
+  "visibility": "public",
+  "repoUrl": "https://github.com/phantasy-bot/plugin-discord",
+  "sourceOfTruth": "monorepo",
+  "sourceOwner": "monorepo",
+  "sourcePayload": "source-extract",
+  "syncMode": "source-extract",
+  "phase": "source-extracted",
+  "sourceExtract": {
+    "packageDependencies": {
+      "@chat-adapter/discord": "^4.32.0"
+    },
+    "files": [
+      {
+        "sourcePath": "src/first-party-plugins/plugin-discord/index.ts",
+        "targetPath": "src/index.ts"
+      },
+      {
+        "sourcePath": "src/first-party-plugins/plugin-discord/discord-plugin.ts",
+        "targetPath": "src/discord-plugin.ts"
+      },
+      {
+        "sourcePath": "src/first-party-plugins/plugin-discord/discord-plugin-endpoints.ts",
+        "targetPath": "src/discord-plugin-endpoints.ts"
+      },
+      {
+        "sourcePath": "src/first-party-plugins/plugin-discord/discord-integration.ts",
+        "targetPath": "src/discord-integration.ts"
+      },
+      {
+        "sourcePath": "src/first-party-plugins/plugin-discord/runtime/discord-bot-service.ts",
+        "targetPath": "src/runtime/discord-bot-service.ts"
+      },
+      {
+        "sourcePath": "src/first-party-plugins/plugin-discord/runtime/discord-thread-helpers.ts",
+        "targetPath": "src/runtime/discord-thread-helpers.ts"
+      },
+      {
+        "sourcePath": "src/first-party-plugins/plugin-discord/runtime/config-helpers.ts",
+        "targetPath": "src/runtime/config-helpers.ts"
+      },
+      {
+        "sourcePath": "src/first-party-plugins/plugin-discord/runtime/discord-plugin-config.ts",
+        "targetPath": "src/runtime/discord-plugin-config.ts"
+      },
+      {
+        "sourcePath": "src/first-party-plugins/plugin-discord/runtime/discord-gateway-session.ts",
+        "targetPath": "src/runtime/discord-gateway-session.ts"
+      }
+    ]
+  },
+  "repoExists": true,
+  "npmPublished": false,
+  "runtimeLoadMode": "git",
+  "monorepoPackageStatus": "removed",
+  "phantasy": {
+    "displayName": "Discord",
+    "category": "social",
+    "tags": [
+      "discord",
+      "community",
+      "messaging",
+      "bot"
+    ],
+    "workspace": "business",
+    "extensionKind": "integration",
+    "permissions": [
+      "internet"
+    ],
+    "pluginDependencies": [],
+    "platforms": [
+      "node"
+    ],
+    "productionReady": false,
+    "adminSurface": {
+      "tabId": "discord",
+      "label": "Discord",
+      "workspace": "business",
+      "kind": "generic",
+      "keywords": [
+        "discord",
+        "community",
+        "messaging",
+        "bot"
+      ]
+    },
+    "configSchema": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    }
+  },
+  "exportedAt": "2026-07-03T01:49:09.638Z"
+}
