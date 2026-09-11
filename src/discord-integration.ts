@@ -29,6 +29,7 @@ export interface DiscordConfig {
   enableCommands: boolean;
   enableAutoReply: boolean;
   enableMentionOnly: boolean;
+  enablePassiveIngest: boolean;
   enableVoiceChat: boolean;
   replyDelay: number;
   autoStart?: boolean;
@@ -95,6 +96,10 @@ function getDiscordIntegrationConfig(agent: unknown): Partial<DiscordConfig> | u
       typeof discord.enableMentionOnly === "boolean"
         ? discord.enableMentionOnly
         : undefined,
+    enablePassiveIngest:
+      typeof discord.enablePassiveIngest === "boolean"
+        ? discord.enablePassiveIngest
+        : undefined,
     enableVoiceChat:
       typeof discord.enableVoiceChat === "boolean" ? discord.enableVoiceChat : undefined,
     replyDelay: typeof discord.replyDelay === "number" ? discord.replyDelay : undefined,
@@ -119,7 +124,10 @@ function normalizeDiscordConfig(config: Partial<DiscordConfig>): DiscordConfig {
     commandPrefix: readOptionalString(config.commandPrefix) || "!",
     enableCommands: readBoolean(config.enableCommands),
     enableAutoReply: readBoolean(config.enableAutoReply),
-    enableMentionOnly: readBoolean(config.enableMentionOnly),
+    enableMentionOnly:
+      typeof config.enableMentionOnly === "boolean" ? config.enableMentionOnly : true,
+    enablePassiveIngest:
+      typeof config.enablePassiveIngest === "boolean" ? config.enablePassiveIngest : true,
     enableVoiceChat: readBoolean(config.enableVoiceChat),
     replyDelay: readNumber(config.replyDelay, 2),
     autoStart: readBoolean(config.autoStart),
@@ -209,15 +217,12 @@ export class DiscordIntegration {
     botInfo?: { id?: string; username?: string };
   }> {
     try {
-      const response = await fetchWithTimeout(
-        "https://discord.com/api/v10/users/@me",
-        {
-          headers: {
-            Authorization: `Bot ${config.botToken}`,
-          },
+      const response = await fetchWithTimeout("https://discord.com/api/v10/users/@me", {
+        headers: {
+          Authorization: `Bot ${config.botToken}`,
         },
-        10_000,
-      );
+        timeout: 10_000,
+      });
 
       if (!response.ok) {
         return {
@@ -265,8 +270,8 @@ export class DiscordIntegration {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(body),
+          timeout: 10_000,
         },
-        10_000,
       );
 
       return response.ok;

@@ -9,6 +9,7 @@ import {
   getPluginRuntimeEnv,
   type ServerEnv,
 } from "@phantasy/agent/plugin-runtime";
+type AgentConfig = Parameters<BasePlugin["onInit"]>[0];
 
 import { handleDiscordPluginEndpoint } from "./discord-plugin-endpoints";
 import { DiscordIntegration, type DiscordConfig } from "./discord-integration";
@@ -80,8 +81,13 @@ export class DiscordPlugin extends BasePlugin implements PlatformCapability {
       enableAutoReply: { type: "boolean", default: false, title: "Enable auto-reply" },
       enableMentionOnly: {
         type: "boolean",
-        default: false,
+        default: true,
         title: "Mention-only in channels",
+      },
+      enablePassiveIngest: {
+        type: "boolean",
+        default: true,
+        title: "Passive group thread ingest",
       },
       enableVoiceChat: { type: "boolean", default: false, title: "Enable voice chat" },
       replyDelay: { type: "number", default: 2, title: "Reply delay (seconds)" },
@@ -96,7 +102,7 @@ export class DiscordPlugin extends BasePlugin implements PlatformCapability {
   }
 
   override async onInit(
-    _agentConfig: Record<string, unknown>,
+    _agentConfig: AgentConfig,
     config?: DiscordPluginConfig,
   ): Promise<void> {
     await super.onInit(_agentConfig, config);

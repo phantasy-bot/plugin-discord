@@ -78,11 +78,22 @@ export function buildDiscordRuntimeConfig(input: {
       snapshot.enableAutoReply,
       stored?.enableAutoReply,
     ),
-    enableMentionOnly: readBoolean(
-      overrides?.enableMentionOnly,
-      snapshot.enableMentionOnly,
-      stored?.enableMentionOnly,
-    ),
+    enableMentionOnly:
+      typeof overrides?.enableMentionOnly === "boolean"
+        ? overrides.enableMentionOnly
+        : typeof snapshot.enableMentionOnly === "boolean"
+          ? snapshot.enableMentionOnly
+          : typeof stored?.enableMentionOnly === "boolean"
+            ? stored.enableMentionOnly
+            : true,
+    enablePassiveIngest:
+      typeof overrides?.enablePassiveIngest === "boolean"
+        ? overrides.enablePassiveIngest
+        : typeof snapshot.enablePassiveIngest === "boolean"
+          ? snapshot.enablePassiveIngest
+          : typeof stored?.enablePassiveIngest === "boolean"
+            ? stored.enablePassiveIngest
+            : true,
     enableVoiceChat: readBoolean(
       overrides?.enableVoiceChat,
       snapshot.enableVoiceChat,

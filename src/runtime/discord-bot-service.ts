@@ -4,9 +4,11 @@ import {
   createPluginModuleLogger,
   importEsmModule,
   kvService,
+  notifyGroupChatObserve,
   type PlatformConversationBridgeInboundEvent,
   type ServerEnv,
 } from "@phantasy/agent/plugin-runtime";
+import type { Adapter } from "chat";
 
 import type { DiscordConfig } from "../discord-integration";
 import {
@@ -24,6 +26,19 @@ type ResolvedCommand = {
   handled: boolean;
   responseText?: string;
 } | null;
+
+type GroupChatModule = typeof import("@/household/lib/group-chat");
+
+async function loadGroupChat(): Promise<GroupChatModule | null> {
+  try {
+    return await import("@/household/lib/group-chat");
+  } catch (error) {
+    logger.warn("Group chat module unavailable", {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return null;
+  }
+}
 
 export class DiscordBotService {
   private bridge: DiscordBridge | null = null;
@@ -114,7 +129,7 @@ export class DiscordBotService {
       registerMentionHandler: true,
       registerMessageHandler:
         this.config.enableAutoReply && !this.config.enableMentionOnly,
-      registerSubscribedHandler: true,
+      registerSubscribedHandler: this.config.enablePassiveIngest,
       replyDelayMs: Math.max(0, this.config.replyDelay) * 1000,
       stateKeyPrefix: "phantasy-chat-sdk:discord",
       userName: this.config.botUsername || "phantasy-discord",
@@ -128,9 +143,32 @@ export class DiscordBotService {
           botToken: this.config.botToken || this.config.token,
           publicKey: this.config.publicKey,
           userName: this.config.botUsername || "phantasy-discord",
-        }) as never;
+        }) as Adapter;
       },
       normalizeInboundMessage: (event) => this.normalizeInboundMessage(event),
+      onObserveMessage: async (event, normalized) => {
+        const gatewayThreadId =
+          normalized.gatewayThreadId ||
+          buildDiscordGatewayThreadId({
+            channelId: normalized.channelId || "",
+            guildId:
+              typeof normalized.gatewayMetadata?.guildId === "string"
+                ? normalized.gatewayMetadata.guildId
+                : undefined,
+          });
+        await notifyGroupChatObserve({
+          platform: "discord",
+          channelKey: gatewayThreadId,
+          channelId: normalized.channelId,
+          authorId: normalized.userId,
+          authorName: normalized.username,
+          text: normalized.content,
+          mentionedBot: event.reason === "mention",
+          reason: event.reason,
+          gatewayThreadId,
+          metadata: normalized.metadata,
+        });
+      },
       onStart: async (bridge) => {
         const adapter = bridge.getAdapter() as {
           startGatewayListener?: (
@@ -188,7 +226,36 @@ export class DiscordBotService {
       return null;
     }
 
+    const isGroup = Boolean(guildId);
+
     if (event.reason === "direct" && !this.config.enableAutoReply) {
+      return null;
+    }
+
+    if (
+      isGroup &&
+      !this.config.enableAutoReply &&
+      event.reason !== "direct" &&
+      event.reason !== "mention"
+    ) {
+      if (this.config.enablePassiveIngest && event.reason === "subscribed") {
+        const rawObserve = String(event.message.text || "").trim();
+        if (!rawObserve) return null;
+        const gatewayThreadId = buildDiscordGatewayThreadId({ channelId, guildId });
+        return {
+          autoSubscribe: true,
+          channelId,
+          channelUserId: authorId,
+          content: rawObserve,
+          gatewayMetadata: { channelId, guildId },
+          gatewayThreadId,
+          skipAgentProcessing: true,
+          source: "discord:guild",
+          threadId: event.thread.id,
+          userId: authorId,
+          username: authorName,
+        };
+      }
       return null;
     }
 
@@ -204,6 +271,8 @@ export class DiscordBotService {
       return null;
     }
 
+    const gatewayThreadId = buildDiscordGatewayThreadId({ channelId, guildId });
+
     const command = await this.resolveCommand(rawText);
     if (command?.handled && !command.content) {
       return {
@@ -215,10 +284,7 @@ export class DiscordBotService {
           channelId,
           guildId,
         },
-        gatewayThreadId: buildDiscordGatewayThreadId({
-          channelId,
-          guildId,
-        }),
+        gatewayThreadId,
         immediateResponseText: command.responseText,
         source: guildId ? "discord:guild" : "discord:dm",
         threadId: event.thread.id,
@@ -236,8 +302,30 @@ export class DiscordBotService {
       return null;
     }
 
+    let metadata: Record<string, unknown> | undefined;
+    let immediateResponseText: string | undefined;
+
+    if (isGroup && event.reason === "mention") {
+      const groupChat = await loadGroupChat();
+      if (groupChat) {
+        const prepared = await groupChat.prepareGroupChatMention({
+          platform: "discord",
+          channelKey: gatewayThreadId,
+          authorId,
+          authorName,
+          text: content,
+          label: guildId ? `Discord #${channelId}` : undefined,
+        });
+        metadata = prepared.metadata;
+        if (prepared.bindConfirmation) {
+          immediateResponseText = prepared.bindConfirmation;
+        }
+      }
+    }
+
     return {
-      autoSubscribe: event.reason !== "message" || this.config.enableAutoReply,
+      autoSubscribe:
+        isGroup && (event.reason === "mention" || this.config.enableAutoReply),
       channelId,
       channelUserId: authorId,
       content,
@@ -245,10 +333,9 @@ export class DiscordBotService {
         channelId,
         guildId,
       },
-      gatewayThreadId: buildDiscordGatewayThreadId({
-        channelId,
-        guildId,
-      }),
+      gatewayThreadId,
+      immediateResponseText,
+      metadata,
       source: guildId ? "discord:guild" : "discord:dm",
       threadId: event.thread.id,
       userId: authorId,

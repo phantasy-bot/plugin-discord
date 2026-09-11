@@ -1,6 +1,6 @@
 {
   "name": "@phantasy/plugin-discord",
-  "version": "0.1.0-beta",
+  "version": "0.1.17-beta",
   "description": "Discord community plugin for Phantasy companions.",
   "displayName": "Discord",
   "main": "./dist/index.js",
